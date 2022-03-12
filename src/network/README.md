@@ -38,8 +38,6 @@ yarn add -D
 
 # How to configure and extend `Api`
 
----
-
 ### Configurables
 
 To begin, you can copy over the `/network/api` folder to your project. This supplies you with the abstract
