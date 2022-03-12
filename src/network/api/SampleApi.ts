@@ -1,4 +1,5 @@
-import { Api, ConfigParams, HTTPMethod } from "./Api";
+import {Api, ConfigParams, HTTPMethod} from "./Api";
+
 
 export class SampleObject {
   constructor(string: string, bool: boolean, num: number) {
@@ -11,6 +12,8 @@ export class SampleObject {
   num = -1;
 }
 
+type SampleParams = ConfigParams<SampleObject>
+
 export class SampleApi extends Api {
   static baseUrl = `sample`;
   static defaultHeaders = {
@@ -19,21 +22,21 @@ export class SampleApi extends Api {
   };
 
   static getSampleList = () => {
-    return SampleApi.generateEndpoint({
+    return SampleApi.generateEndpoint<SampleParams>({
       method: "GET" as HTTPMethod,
       url: SampleApi.baseUrl,
     });
   };
 
   static getSampleItem = (id: number) => {
-    return SampleApi.generateEndpoint({
+    return SampleApi.generateEndpoint<SampleParams>({
       method: "GET" as HTTPMethod,
       url: `${SampleApi.baseUrl}/${id}`,
     });
   };
 
   static postSampleItem = (obj: SampleObject) => {
-    return SampleApi.generateEndpoint({
+    return SampleApi.generateEndpoint<SampleParams>({
       method: "POST",
       url: SampleApi.baseUrl,
       data: obj,
@@ -41,7 +44,7 @@ export class SampleApi extends Api {
   };
 
   static patchSampleItem = (id: number, update: Partial<SampleObject>) => {
-    return SampleApi.generateEndpoint({
+    return SampleApi.generateEndpoint<SampleParams>({
       method: "PATCH",
       url: `${SampleApi.baseUrl}/${id}`,
       data: update,

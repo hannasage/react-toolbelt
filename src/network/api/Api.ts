@@ -10,7 +10,9 @@ export type Endpoint = AxiosRequestConfig;
  * by the API */
 export type ValidApiObjects = SampleObject;
 
-/* Shape of params used to configure an API endpoint */
+/* Shape of params used to configure an API endpoint
+ * All param types must extend this or merely alias it
+ * with the appropriate cast */
 export interface ConfigParams<T = ValidApiObjects> {
   method: HTTPMethod;
   url: string;
@@ -31,7 +33,7 @@ export abstract class Api {
   };
 
   /* Handles creating the configurations for endpoints */
-  private static makeConfig = (params: ConfigParams): AxiosRequestConfig => {
+  private static makeConfig = <P extends ConfigParams>(params: P): AxiosRequestConfig => {
     return {
       method: params.method,
       url: `${this.baseUrl}/${params.url}`,
@@ -43,7 +45,7 @@ export abstract class Api {
 
   /* Public function to generate endpoints. This proxy allows for expansion
    * and logic gates if you want to get fancy. */
-  static generateEndpoint(params: ConfigParams): Endpoint {
+  static generateEndpoint<P extends ConfigParams>(params: P): Endpoint {
     return this.makeConfig(params);
   }
 }
