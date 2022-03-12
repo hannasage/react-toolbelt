@@ -1,6 +1,11 @@
 import { Api, ConfigParams, HTTPMethod } from "./Api";
 
 export class SampleObject {
+  constructor(string: string, bool: boolean, num: number) {
+    this.string = string;
+    this.bool = bool;
+    this.num = num;
+  }
   string = "";
   bool = false;
   num = -1;
@@ -33,5 +38,13 @@ export class SampleApi extends Api {
       url: SampleApi.baseUrl,
       data: obj,
     } as ConfigParams<SampleObject>);
+  };
+
+  static patchSampleItem = (id: number, update: Partial<SampleObject>) => {
+    return SampleApi.generateEndpoint({
+      method: "PATCH",
+      url: `${SampleApi.baseUrl}/${id}`,
+      data: update,
+    });
   };
 }
