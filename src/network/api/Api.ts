@@ -4,7 +4,7 @@ import { SampleObject } from "./SampleApi";
 
 /* Type alias for CRUD ops */
 export type HTTPMethod = "POST" | "GET" | "PATCH" | "DELETE";
-export type Endpoint = AxiosRequestConfig
+export type Endpoint = AxiosRequestConfig;
 
 /* Type alias containing a list of objects allowed to be returned
  * by the API */
@@ -16,7 +16,7 @@ export interface ConfigParams<T = ValidApiObjects> {
   url: string;
   headers?: AxiosRequestHeaders;
   responseType?: ResponseType;
-  data?: T;
+  data?: Partial<T>;
 }
 
 export abstract class Api {
