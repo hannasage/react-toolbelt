@@ -4,6 +4,7 @@ import { SampleObject } from "./SampleApi";
 
 /* Type alias for CRUD ops */
 export type HTTPMethod = "POST" | "GET" | "PATCH" | "DELETE";
+export type Endpoint = AxiosRequestConfig
 
 /* Type alias containing a list of objects allowed to be returned
  * by the API */
@@ -42,7 +43,7 @@ export abstract class Api {
 
   /* Public function to generate endpoints. This proxy allows for expansion
    * and logic gates if you want to get fancy. */
-  static generateEndpoint(params: ConfigParams): AxiosRequestConfig {
+  static generateEndpoint(params: ConfigParams): Endpoint {
     return this.makeConfig(params);
   }
 }
