@@ -57,6 +57,11 @@ interface ConfigParams<T = ValidApiObjects> {
   responseType?: ResponseType;
   data?: Partial<T>;
 }
+
+class Api {
+    static baseUrl = "/api" // Your api's base path
+    static defaultHeaders = { /* ... */ } // Headers you'll always need
+}
 ```
 
 ---
