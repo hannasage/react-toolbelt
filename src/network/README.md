@@ -88,7 +88,7 @@ class NewApi extends Api {
   // Extends generateEndpoint to factor in API versioning
   static generateVersionedEndpoint(params: NewParams): Endpoint {
     const config: ConfigParams<NewItem> = {
-        url: `${params.apiVersion}/${params.url}?cached=${params.cacheCall}`
+        url: `/${params.apiVersion}/${params.url}?cached=${params.cacheCall}`
     }
     return super.generateEndpoint<ConfigParams<NewItem>>(config)
   }
