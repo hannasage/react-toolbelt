@@ -14,38 +14,40 @@ export type ValidApiObjects = SampleObject;
  * All param types must extend this or merely alias it
  * with the appropriate cast */
 export interface ConfigParams<T = ValidApiObjects> {
-  method: HTTPMethod;
-  url: string;
-  headers?: AxiosRequestHeaders;
-  responseType?: ResponseType;
-  data?: Partial<T>;
+    method: HTTPMethod;
+    url: string;
+    headers?: AxiosRequestHeaders;
+    responseType?: ResponseType;
+    data?: Partial<T>;
 }
 
 export abstract class Api {
-  static accessToken = "test token"; // Implement a getter here!
-  static baseUrl = "/api"; // Define your base Api path here!
+    static accessToken = "test token"; // Implement a getter here!
+    static baseUrl = "/api"; // Define your base Api path here!
 
-  /* If you want to define your own headers in your new Api, be
-   * sure to destructure the defaults, so you don't have to duplicate
-   * any of them. */
-  static defaultHeaders: AxiosRequestHeaders = {
-    Authorization: `Bearer ${this.accessToken}`,
-  };
-
-  /* Handles creating the configurations for endpoints */
-  private static makeConfig = <P extends ConfigParams>(params: P): AxiosRequestConfig => {
-    return {
-      method: params.method,
-      url: `${this.baseUrl}/${params.url}`,
-      headers: params.headers || this.defaultHeaders,
-      responseType: params.responseType || "json",
-      data: params.data || null,
+    /* If you want to define your own headers in your new Api, be
+     * sure to destructure the defaults, so you don't have to duplicate
+     * any of them. */
+    static defaultHeaders: AxiosRequestHeaders = {
+        Authorization: `Bearer ${this.accessToken}`,
     };
-  };
 
-  /* Public function to generate endpoints. This proxy allows for expansion
-   * and logic gates if you want to get fancy. */
-  static generateEndpoint<P extends ConfigParams>(params: P): Endpoint {
-    return this.makeConfig(params);
-  }
+    /* Handles creating the configurations for endpoints */
+    private static makeConfig = <P extends ConfigParams>(
+        params: P
+    ): AxiosRequestConfig => {
+        return {
+            method: params.method,
+            url: `${this.baseUrl}/${params.url}`,
+            headers: params.headers || this.defaultHeaders,
+            responseType: params.responseType || "json",
+            data: params.data || null,
+        };
+    };
+
+    /* Public function to generate endpoints. This proxy allows for expansion
+     * and logic gates if you want to get fancy. */
+    static generateEndpoint<P extends ConfigParams>(params: P): Endpoint {
+        return this.makeConfig(params);
+    }
 }
