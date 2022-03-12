@@ -80,8 +80,8 @@ interface NewParams extends ConfigParams<NewItem> {
 
 ### Customize `generateEndpoint`
 
-Where this really matters is the `generateEndpoint<P>()` function. By creating a proxy for it,  we can handle 
-custom logic pertaining to the creation of our endpoints prior to calling `super.generateEndpoint()`
+The `Api` class has a method that builds your config for you. By creating a proxy for it,  we can handle 
+custom logic pertaining to the creation of our endpoints prior to calling `super.generateEndpoint()`.
 
 ```typescript
 class NewApi extends Api {
