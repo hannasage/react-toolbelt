@@ -80,13 +80,13 @@ interface NewParams extends ConfigParams<NewItem> {
 
 ### Customize `generateEndpoint`
 
-Where this really matters is the `generateEndpoint<P>()` function. By overriding it, yet still returning 
-`super.generateEndpoint(params)`, we can handle custom logic pertaining to the creation of our endpoints.
+Where this really matters is the `generateEndpoint<P>()` function. By creating a proxy for it,  we can handle 
+custom logic pertaining to the creation of our endpoints prior to calling `super.generateEndpoint()`
 
 ```typescript
 class NewApi extends Api {
   // Extends generateEndpoint to factor in API versioning
-  static generateEndpoint(params: NewParams): Endpoint {
+  static generateVersionedEndpoint(params: NewParams): Endpoint {
     const config: ConfigParams<NewItem> = {
         url: `${params.apiVersion}/${params.url}?cached=${params.cacheCall}`
     }
@@ -102,7 +102,7 @@ class NewApi extends Api {
 
 ### Create an endpoint
 The last part of configuring your API interface class is to give it some endpoints. To do this, we'll use our
-newly customized `generateEndpoint()` call to create the config for `/api/v2/new`. Keep in mind, our Api abstract
+newly customized `generateVersionedEndpoint()` call to create the config for `/api/v2/new`. Keep in mind, our Api abstract
 class prepends the `/api` path for us.
 
 ```typescript
@@ -110,7 +110,7 @@ class NewApi extends Api {
   static baseUrl = "new"
   // Returns list of items from /api/{v}/new?cache=false
   static getNewList = (v: Version) => {
-    return SampleApi.generateEndpoint({
+    return SampleApi.generateVersionedEndpoint({
       method: "GET",
       url: this.baseUrl,
       cacheCall: false,
