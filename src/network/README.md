@@ -71,13 +71,13 @@ class Api {
 Now you can extend this class with the peace of mind that type safety is fairly strict. Once you've
 extended the class, you can implement its static `generateEndpoint<P>()` method, where `P` is an interface
 type of, or extending, `ConfigParams` as defined above. Here is an example of what it might look like to
-extend the parameters to include additional fields:
+extend the parameters to include additional fields for a cursor-based pagination config:
 
 ```typescript
-type Version = "v1" | "v2" | "v3rc"
-interface NewParams extends ConfigParams<NewItem> {
-    cacheCall: boolean,
-    apiVersion: Version,
+type PageSize = 10 | 25 | 50 
+interface NewParams extends ConfigParams<NewItem | NewItem[]> {
+  cursor: Date,
+  pageSize: PageSize,
 }
 ```
 
@@ -91,11 +91,12 @@ custom logic pertaining to the creation of our endpoints prior to calling `super
 ```typescript
 class NewApi extends Api {
   // Extends generateEndpoint to factor in API versioning
-  static generateVersionedEndpoint(params: NewParams): Endpoint {
-    const config: ConfigParams<NewItem> = {
-        url: `/${params.apiVersion}/${params.url}?cached=${params.cacheCall}`
+  static generatePaginationEndpoint(params: NewParams): Endpoint {
+    const config: ConfigParams<NewItem[]> = {
+        method: params.method,
+        url: `/${params.url}?cursor=${params.cursor.toISOString()}&pagesize=${params.pageSize}`
     }
-    return super.generateEndpoint<ConfigParams<NewItem>>(config)
+    return super.generateEndpoint<ConfigParams<NewItem[]>>(config)
   }
 }
 ```
@@ -107,19 +108,19 @@ class NewApi extends Api {
 
 ### Create an endpoint
 The last part of configuring your API interface class is to give it some endpoints. To do this, we'll use our
-newly customized `generateVersionedEndpoint()` call to create the config for `/api/v2/new`. Keep in mind, our Api abstract
+newly customized `generateVersionedEndpoint()` call to create the config for `/api/new`. Keep in mind, our Api abstract
 class prepends the `/api` path for us.
 
 ```typescript
 class NewApi extends Api {
   static baseUrl = "new"
   // Returns list of items from /api/{v}/new?cache=false
-  static getNewList = (v: Version) => {
+  static getNewList = (cursor?: Date, pageSize?: PageSize) => {
     return SampleApi.generateVersionedEndpoint({
       method: "GET",
       url: this.baseUrl,
-      cacheCall: false,
-      apiVersion: v
+      cursor: cursor || new Date(),
+      pageSize: pageSize || 10
       // ...the rest as needed
     })
   }
@@ -165,7 +166,7 @@ run `call()` and your data will update!
 ```typescript
 const [pageSize, setPageSize] = useState<number>(15)
 const [cursor, setCursor] = useState<Date>(new Date())
-const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList(pageSize, cursor))
+const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList(cursor, pageSize))
 
 useEffect(() => {
     call()
