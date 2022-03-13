@@ -49,4 +49,11 @@ export class SampleApi extends Api {
             data: update,
         });
     };
+
+    static deleteSampleItem = (id: number) => {
+        return SampleApi.generateEndpoint<SampleParams>({
+            method: "DELETE",
+            url: `${SampleApi.baseUrl}/${id}`,
+        })
+    }
 }

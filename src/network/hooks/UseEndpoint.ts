@@ -29,7 +29,7 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
     const handleResponse = (res: AxiosResponse) => {
         setResponse({
             loading: false,
-            data: res.data,
+            data: res.data || null,
             status: res.status,
             message: "",
         });
@@ -77,6 +77,17 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
                     .catch((err: any) => {
                         handleError(err);
                     });
+                break;
+            }
+            case "DELETE": {
+                axios.delete<T>(url(endpoint.url), endpoint)
+                    .then((res: AxiosResponse) => {
+                        handleResponse(res);
+                    })
+                    .catch((err: any) => {
+                        handleError(err);
+                    });
+                break;
             }
         }
     }, [endpoint]);
