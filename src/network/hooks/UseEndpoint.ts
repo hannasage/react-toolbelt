@@ -14,7 +14,7 @@ export interface EndpointController<T> {
     response: EndpointResponse<T>;
 }
 
-const URL_PREFIX = "http://localhost";
+const URL_PREFIX = "http://localhost:3000";
 export const url = (suf?: string) =>
     suf ? `${URL_PREFIX}/${suf}` : `${URL_PREFIX}`;
 

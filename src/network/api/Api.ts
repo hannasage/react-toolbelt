@@ -23,7 +23,7 @@ export interface ConfigParams<T = ValidApiObjects> {
 
 export abstract class Api {
     static accessToken = "test token"; // Implement a getter here!
-    static baseUrl = "/api"; // Define your base Api path here!
+    static baseUrl = "api"; // Define your base Api path here!
 
     /* If you want to define your own headers in your new Api, be
      * sure to destructure the defaults, so you don't have to duplicate
