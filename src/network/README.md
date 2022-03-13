@@ -4,7 +4,7 @@
 The principles followed in this networking folder aim to provide abstractions of common networking
 logic to keep components clean and behavior predictable. While I encourage you to take what you need
 and expand on it in your own project as your needs permit, as it's laid out here, you should be able
-to copy the `/network`folder into any React project, install the dependencies, and start utilizing them.
+to copy the `/network`folder into any React project, install the dependencies, and start utilizing these tools.
 
 ## Inventory
 - api
