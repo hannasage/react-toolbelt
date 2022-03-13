@@ -126,7 +126,6 @@ class NewApi extends Api {
 }
 ```
 
----
 
 # The `useEndpoint` hook
 
