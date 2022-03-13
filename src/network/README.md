@@ -116,7 +116,7 @@ class NewApi extends Api {
   static baseUrl = "new"
   // Returns list of items from /api/{v}/new?cache=false
   static getNewList = (cursor?: Date, pageSize?: PageSize) => {
-    return SampleApi.generateVersionedEndpoint({
+    return this.generateVersionedEndpoint({
       method: "GET",
       url: this.baseUrl,
       cursor: cursor || new Date(),
