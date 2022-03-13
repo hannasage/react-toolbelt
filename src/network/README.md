@@ -125,3 +125,51 @@ class NewApi extends Api {
   }
 }
 ```
+
+---
+
+# The `useEndpoint` hook
+
+For your components and contexts to actually get data from these endpoints, you're going to have to implement
+the `useEndpoint` hook! This hook takes an endpoint configuration, provides both a controller
+and a state object with response data, and lets the context or component handle when it wants to call.
+
+### Implementation 
+
+Inside a functional component, import the hook and pass in an endpoint configuration:
+
+```typescript
+import {useEndpoint} from "./UseEndpoint";
+const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList())
+```
+
+The reason you provide the hook with a type is so our responses are type-safe. Also, since the API interfaces handle all the
+configuration logic, our component doesn't have to do any origami with state values to pack them into
+an object and send them off, just in time to call `.then()` and handle the response, packing it into
+another piece of state. Instead, what you get is a one-liner with a stateful response.
+
+In some cases, you _will_ need an API endpoint to take in some state from the component. Here's what that
+could look like:
+
+```typescript
+const [pageSize, setPageSize] = useState<number>(15)
+const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList(pageSize))
+```
+
+Let's pretend we need to pass a pageSize state into our endpoint for pagination reasons.
+Here's where the beauty of the `useEndpoint` hook shines! It will detect when the state of the endpoint
+has changed, and set its `call()` function to the correct method. From there, our component can create
+an effect for when that state changes (i.e. when a user updates their pageSize state), the effect will
+run `call()` and your data will update!
+
+```typescript
+const [pageSize, setPageSize] = useState<number>(15)
+const [cursor, setCursor] = useState<Date>(new Date())
+const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList(pageSize, cursor))
+
+useEffect(() => {
+    call()
+}, [pageSize, cursor])
+```
+
+And just like that, your component is utilizing your API. 
