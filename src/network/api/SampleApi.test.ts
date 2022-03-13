@@ -66,4 +66,17 @@ describe("Sample API", () => {
             },
         });
     });
+
+    test("deleteSampleItem", () => {
+        const endpoint = SampleApi.deleteSampleItem(123)
+        expect(endpoint).toEqual({
+            method: "DELETE",
+            url: "/api/sample/123",
+            headers: {
+                Authorization: "Bearer test token",
+            },
+            responseType: "json",
+            data: null
+        })
+    })
 });

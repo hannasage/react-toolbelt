@@ -59,4 +59,18 @@ describe("useNetwork.ts", () => {
             num: 123,
         });
     });
+
+    test("deletes data by id", async () => {
+        const { result, waitForNextUpdate } = renderHook(() =>
+            useEndpoint<SampleObject>(SampleApi.deleteSampleItem(123))
+        );
+        act(() => result.current.call());
+        await waitForNextUpdate();
+
+        expect(result.current.response.loading).toBeFalsy();
+        expect(result.current.response.status).toBe(200);
+        expect(result.current.response.message).toBe("");
+        expect(result.current.response.data).toBeNull();
+    });
+
 });

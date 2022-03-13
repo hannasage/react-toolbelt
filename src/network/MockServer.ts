@@ -12,6 +12,7 @@ const postEndpoint = SampleApi.postSampleItem(obj);
 const patchEndpoint = SampleApi.patchSampleItem(123, {
     bool: false,
 });
+const deleteEndpoint = SampleApi.deleteSampleItem(123)
 
 const handlers = [
     rest.get(url(getEndpoint.url), (req, res, ctx) => {
@@ -34,6 +35,10 @@ const handlers = [
         );
         return res(ctx.json(copyObj), ctx.status(202));
     }),
+
+    rest.delete(url(deleteEndpoint.url), (req, res, ctx) => {
+        return res(ctx.status(200))
+    })
 ];
 
 export const sampleServer = setupServer(...handlers);
