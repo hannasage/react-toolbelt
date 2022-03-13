@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import NetworkDemo from "./NetworkDemo";
 import { BrowserRouter } from "react-router-dom";
 import { sampleServer } from "../MockServer";
@@ -37,7 +37,7 @@ describe("Network interfacing", () => {
 
     test("Network recalls on id change", async () => {
         const button = screen.getByTitle("update-button");
-        button.click();
+        fireEvent["click"](button)
 
         /* This throws the following error, yet still passes:
          * Can't perform a React state update on an unmounted component.
