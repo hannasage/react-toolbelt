@@ -54,6 +54,6 @@ export class SampleApi extends Api {
         return SampleApi.generateEndpoint<SampleParams>({
             method: "DELETE",
             url: `${SampleApi.baseUrl}/${id}`,
-        })
-    }
+        });
+    };
 }

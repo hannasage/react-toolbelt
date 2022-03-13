@@ -72,5 +72,4 @@ describe("useNetwork.ts", () => {
         expect(result.current.response.message).toBe("");
         expect(result.current.response.data).toBeNull();
     });
-
 });

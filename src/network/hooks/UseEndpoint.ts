@@ -80,7 +80,8 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
                 break;
             }
             case "DELETE": {
-                axios.delete<T>(url(endpoint.url), endpoint)
+                axios
+                    .delete<T>(url(endpoint.url), endpoint)
                     .then((res: AxiosResponse) => {
                         handleResponse(res);
                     })
