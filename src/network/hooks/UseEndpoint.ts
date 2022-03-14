@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import axios, { AxiosResponse } from "axios";
 
-import { Endpoint } from "../api/Api";
+import { EndpointConfig } from "../api/Api";
 
 export interface EndpointResponse<T> {
     loading: boolean;
@@ -14,11 +14,7 @@ export interface EndpointController<T> {
     response: EndpointResponse<T>;
 }
 
-const URL_PREFIX = "http://localhost:3000";
-export const url = (suf?: string) =>
-    suf ? `${URL_PREFIX}/${suf}` : `${URL_PREFIX}`;
-
-export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
+export function useEndpoint<T>(endpoint: EndpointConfig<T>): EndpointController<T> {
     const [response, setResponse] = useState<EndpointResponse<T>>({
         loading: true,
         data: undefined,
@@ -48,7 +44,7 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
         switch (endpoint.method) {
             case "GET": {
                 axios
-                    .get<T>(url(endpoint.url), endpoint)
+                    .get<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
                         handleResponse(res);
                     })
@@ -59,7 +55,7 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
             }
             case "POST": {
                 axios
-                    .post<T>(url(endpoint.url), endpoint)
+                    .post<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
                         handleResponse(res);
                     })
@@ -70,7 +66,7 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
             }
             case "PATCH": {
                 axios
-                    .patch<T>(url(endpoint.url), endpoint)
+                    .patch<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
                         handleResponse(res);
                     })
@@ -81,7 +77,7 @@ export function useEndpoint<T>(endpoint: Endpoint): EndpointController<T> {
             }
             case "DELETE": {
                 axios
-                    .delete<T>(url(endpoint.url), endpoint)
+                    .delete<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
                         handleResponse(res);
                     })

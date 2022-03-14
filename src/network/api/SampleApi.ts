@@ -1,4 +1,4 @@
-import { Api, ConfigParams, HTTPMethod } from "./Api";
+import { Api, ApiConfig, HTTPMethod } from "./Api";
 
 export class SampleObject {
     constructor(string: string, bool: boolean, num: number) {
@@ -11,49 +11,42 @@ export class SampleObject {
     num = -1;
 }
 
-type SampleParams = ConfigParams<SampleObject>;
-
-export class SampleApi extends Api {
-    static baseUrl = `sample`;
-    static defaultHeaders = {
-        "Sample-header": true,
-        ...Api.defaultHeaders,
-    };
-
-    static getSampleList = () => {
-        return SampleApi.generateEndpoint<SampleParams>({
+class SampleApi extends Api {
+    getSampleList = () => {
+        return this.configure<SampleObject[]>({
             method: "GET" as HTTPMethod,
-            url: SampleApi.baseUrl,
+            url: this.basePath,
         });
     };
 
-    static getSampleItem = (id: number) => {
-        return SampleApi.generateEndpoint<SampleParams>({
-            method: "GET" as HTTPMethod,
-            url: `${SampleApi.baseUrl}/${id}`,
-        });
-    };
-
-    static postSampleItem = (obj: SampleObject) => {
-        return SampleApi.generateEndpoint<SampleParams>({
+    postSampleItem = (obj: SampleObject) => {
+        return this.configure<SampleObject>({
             method: "POST",
-            url: SampleApi.baseUrl,
+            url: this.basePath,
             data: obj,
-        } as ConfigParams<SampleObject>);
+        });
     };
 
-    static patchSampleItem = (id: number, update: Partial<SampleObject>) => {
-        return SampleApi.generateEndpoint<SampleParams>({
+    patchSampleItem = (id: number, update: Partial<SampleObject>) => {
+        return this.configure<Partial<SampleObject>>({
             method: "PATCH",
-            url: `${SampleApi.baseUrl}/${id}`,
+            url: `${this.basePath}/${id}`,
             data: update,
         });
     };
 
-    static deleteSampleItem = (id: number) => {
-        return SampleApi.generateEndpoint<SampleParams>({
+    deleteSampleItem = (id: number) => {
+        return this.configure<null>({
             method: "DELETE",
-            url: `${SampleApi.baseUrl}/${id}`,
+            url: `${this.basePath}/${id}`,
         });
     };
 }
+
+const config = new ApiConfig({
+    basePath: "http://testhost:420/api",
+    headers: {
+        Authorization: "Bearer [token]",
+    },
+});
+export const sampleApi = new SampleApi(config, "sample");
