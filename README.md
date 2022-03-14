@@ -4,11 +4,6 @@ This repository houses a collection of _Reactive_ tools I've developed over time
 to let engineers tap into the underlying functions of the library like state and memoization.
 A truly reactive tool is one that taps into these features to create a seamless implementation!
 
-I encourage you to peruse the repo, whether on GitHub or your local machine, and take what you want,
-use it, iterate on it, perfect it in your eyes. These are not "final products", there is no strict
-release schedule, there is no need to install a package to use one tool, nor is there a lock-in to one 
-method of solving your problem; use one piece, or the whole puzzle.
-
 # Tools
 
 ### Coming soon:
