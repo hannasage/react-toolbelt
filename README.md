@@ -18,8 +18,8 @@ api
 the `useEndpoint` hook to update API responses as variables change; this is great for hooking up a filter
 selection component with a results display.
 
-### Tools:
-- [React Networking](/src/network): a some-config-required solution to the pain of API calls in React! It uses a 
+### Npm Packages:
+- [react-networking](/src/network): a some-config-required solution to the pain of API calls in React! It uses a 
 
 ---
 
