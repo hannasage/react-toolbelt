@@ -19,7 +19,8 @@ the `useEndpoint` hook to update API responses as variables change; this is grea
 selection component with a results display.
 
 ### Npm Packages:
-- [react-networking](/src/network): a some-config-required solution to the pain of API calls in React! It uses a 
+- [react-networking](/src/network): a some-config-required solution to the pain of API calls in React! It
+provides helper classes and a hook that make network interfaces a breeze.
 
 ---
 
