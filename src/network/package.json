@@ -1,0 +1,25 @@
+{
+  "name": "@normellis/react-network",
+  "version": "0.1.0",
+  "description": "A networking library that keeps components and contexts clean.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "react-scripts test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/kevinhaube/react-toolbelt/src/network"
+  },
+  "keywords": [
+    "react",
+    "network",
+    "hooks",
+    "api",
+    "interface"
+  ],
+  "author": "normellis",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}

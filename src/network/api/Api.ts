@@ -1,53 +1,63 @@
-import { AxiosRequestConfig, AxiosRequestHeaders, ResponseType } from "axios";
+import { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 
-import { SampleObject } from "./SampleApi";
-
-/* Type alias for CRUD ops */
+/* Type alias for CRUD ops that I wish to allow */
 export type HTTPMethod = "POST" | "GET" | "PATCH" | "DELETE";
-export type Endpoint = AxiosRequestConfig;
 
-/* Type alias containing a list of objects allowed to be returned
- * by the API */
-export type ValidApiObjects = SampleObject;
-
-/* Shape of params used to configure an API endpoint
- * All param types must extend this or merely alias it
- * with the appropriate cast */
-export interface ConfigParams<T = ValidApiObjects> {
-    method: HTTPMethod;
-    url: string;
-    headers?: AxiosRequestHeaders;
-    responseType?: ResponseType;
-    data?: Partial<T>;
+/* Parameters to instantiate an ApiConfig
+ *
+ * @property basePath: string
+ * @property headers: AxiosRequestHeaders */
+export interface ApiConfigProperties {
+    root: string;
+    headers: AxiosRequestHeaders;
 }
 
-export abstract class Api {
-    static accessToken = "test token"; // Implement a getter here!
-    static baseUrl = "api"; // Define your base Api path here!
+/* Overriding the `method` property with my own type. */
+export interface EndpointConfig<T> extends AxiosRequestConfig<T> {
+    method: HTTPMethod;
+    url: string;
+}
 
-    /* If you want to define your own headers in your new Api, be
-     * sure to destructure the defaults, so you don't have to duplicate
-     * any of them. */
-    static defaultHeaders: AxiosRequestHeaders = {
-        Authorization: `Bearer ${this.accessToken}`,
-    };
+/* An ApiConfig houses methods needed to create an API class
+ * A single ApiConfig should exist for each unique base URLs
+ * you access. Any endpoints can be housed in their own Api
+ * class.
+ *
+ * @param config: ConfigProperties */
+export class ApiConfig {
+    constructor(config: ApiConfigProperties) {
+        this.root = config.root;
+        this.headers = config.headers;
+    }
+    root: string;
+    headers: AxiosRequestHeaders;
 
-    /* Handles creating the configurations for endpoints */
-    private static makeConfig = <P extends ConfigParams>(
-        params: P
-    ): AxiosRequestConfig => {
+    /* Prepend API base path (e.g. http://localhost:8080) */
+    url = (s: string) => `${this.root}/${s}`;
+}
+
+/* An Api houses methods that return super.configure(params),
+ * known as EndpointConfigs
+ *
+ * @param apiConfig:  */
+export class Api {
+    constructor(apiConfig: ApiConfig, basePath: string) {
+        this.config = apiConfig;
+        this.basePath = basePath;
+    }
+    config: ApiConfig;
+    basePath: string;
+
+    /* Handles configuration logic */
+    configure<D>(params: EndpointConfig<D>): EndpointConfig<D> {
         return {
-            method: params.method,
-            url: `${this.baseUrl}/${params.url}`,
-            headers: params.headers || this.defaultHeaders,
-            responseType: params.responseType || "json",
-            data: params.data || null,
-        };
-    };
+            ...params, // Spread first and then override below
 
-    /* Public function to generate endpoints. This proxy allows for expansion
-     * and logic gates if you want to get fancy. */
-    static generateEndpoint<P extends ConfigParams>(params: P): Endpoint {
-        return this.makeConfig(params);
+            /* Value overrides */
+            url: this.config.url(params.url),
+            method: params.method || "GET", // Default to "GET" method
+            headers: params.headers || this.config.headers, // Override headers or default to base headers
+            responseType: params.responseType || "json", // Default "json" response
+        };
     }
 }

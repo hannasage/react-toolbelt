@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
-import { sampleServer } from "../MockServer";
-import { SampleApi, SampleObject } from "../api/SampleApi";
+import { sampleServer } from "../TestServer";
+import { sampleApi, SampleObject } from "../_sample/SampleApi";
 
 import { useEndpoint } from "./UseEndpoint";
 
@@ -15,7 +15,7 @@ describe("useNetwork.ts", () => {
 
     test("returns data from get call", async () => {
         const { result, waitForNextUpdate } = renderHook(() =>
-            useEndpoint<SampleObject>(SampleApi.getSampleItem(123))
+            useEndpoint<SampleObject[]>(sampleApi.getSampleList())
         );
         act(() => result.current.call());
         await waitForNextUpdate();
@@ -23,12 +23,12 @@ describe("useNetwork.ts", () => {
         expect(result.current.response.loading).toBeFalsy();
         expect(result.current.response.status).toBe(200);
         expect(result.current.response.message).toBe("");
-        expect(result.current.response.data).toEqual(obj);
+        expect(result.current.response.data).toEqual([obj, obj]);
     });
 
     test("posts data from post call", async () => {
         const { result, waitForNextUpdate } = renderHook(() =>
-            useEndpoint<SampleObject>(SampleApi.postSampleItem(obj))
+            useEndpoint<SampleObject>(sampleApi.postSampleItem(obj))
         );
         act(() => result.current.call());
         await waitForNextUpdate();
@@ -41,8 +41,8 @@ describe("useNetwork.ts", () => {
 
     test("patches data with new values", async () => {
         const { result, waitForNextUpdate } = renderHook(() =>
-            useEndpoint<SampleObject>(
-                SampleApi.patchSampleItem(123, {
+            useEndpoint<Partial<SampleObject>>(
+                sampleApi.patchSampleItem(123, {
                     bool: false,
                 })
             )
@@ -54,15 +54,15 @@ describe("useNetwork.ts", () => {
         expect(result.current.response.status).toBe(202);
         expect(result.current.response.message).toBe("");
         expect(result.current.response.data).toEqual({
-            string: "string",
-            bool: false,
-            num: 123,
+            received: {
+                bool: false,
+            },
         });
     });
 
     test("deletes data by id", async () => {
         const { result, waitForNextUpdate } = renderHook(() =>
-            useEndpoint<SampleObject>(SampleApi.deleteSampleItem(123))
+            useEndpoint<null>(sampleApi.deleteSampleItem(123))
         );
         act(() => result.current.call());
         await waitForNextUpdate();

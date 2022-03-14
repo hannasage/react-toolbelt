@@ -1,175 +1,117 @@
 # React Networking
 
 ## The gist
-The principles followed in this networking folder aim to provide abstractions of common networking
-logic to keep components clean and behavior predictable. While I encourage you to take what you need
-and expand on it in your own project as your needs permit, as it's laid out here, you should be able
-to copy the `/network`folder into any React project, install the dependencies, and start utilizing these tools.
 
-## Inventory
-- api
-  - `Api.ts`: the abstract class extendable to create API interfaces
-  - `SampleApi.ts`: an example of an API interface class
-- hooks
-  - `useEndpoint`: a hook that consumes endpoints from an API interface class and reactively updates the
-  response
+This library provides abstractions of common networking logic to keep components clean, 
+and their behavior predictable. This is done with classes:
+- `ApiConfig` can be instantiated to define your base api configuration.
+- `Api` can be extended to create an api interface.
 
-## Setup
-Following these instructions should net you a working API interface and a component that consumes the 
-controller and response state of `useEndpoint`.
+Lastly, the consumer hook `useEndpoint` takes in an endpoint from your Api class and produces a
+controller and state to be used in a functional component or React context.
 
-### Before using
-Our core dependency for our networking layer is the promise-based network call manager, `axios`.
+# Getting Started
 
-```
-yarn add axios
-```
-Additionally, to run tests in your own project, some dependencies are involved. These are already included
-in this repository.
-
-```
-yarn add -D 
-    msw 
-    react-router-dom 
-    @testing-library/react 
-    @testing-library/react-hooks 
-    @testing-library/jest-dom
-```
-
-# How to configure and extend `Api`
-
-### Configurables
-
-To begin, you can copy over the `/network/api` folder to your project. This supplies you with the abstract
-Api class and a sample API interface extending this class. Inside of `Api.ts`, you'll find a few configurable
-types:
-
-```typescript
-type HTTPMethod = "POST" | "GET" | "PATCH" | "DELETE" // Configure REST methods your API allows
-type Endpoint = AxiosRequestConfig // Configure what your Endpoint should look like
-type ValidApiObjects = SampleObject | TestObject | OtherObject // Ensures strict return types
-
-/* This defines what data you need to provide to the method that creates an Endpoint */
-interface ConfigParams<T = ValidApiObjects> {
-  method: HTTPMethod;
-  url: string;
-  headers?: AxiosRequestHeaders;
-  responseType?: ResponseType;
-  data?: Partial<T>;
-}
-
-class Api {
-    static baseUrl = "/api" // Your api's base path
-    static defaultHeaders = { /* ... */ } // Headers you'll always need
-}
+### Install
+``` 
+yarn add @normellis/react-networking
 ```
 
 ---
 
-### Parameter base type & extension
+### Create your `ApiConfig`
 
-Now you can extend this class with the peace of mind that type safety is fairly strict. Once you've
-extended the class, you can implement its static `generateEndpoint<P>()` method, where `P` is an interface
-type of, or extending, `ConfigParams` as defined above. Here is an example of what it might look like to
-extend the parameters to include additional fields for a cursor-based pagination config:
+This configuration can be thought of as the bedrock on which your Api interfaces will sit. To create
+a new configuration:
 
 ```typescript
-type PageSize = 10 | 25 | 50 
-interface NewParams extends ConfigParams<NewItem | NewItem[]> {
-  cursor: Date,
-  pageSize: PageSize,
-}
-```
-
----
-
-### Customize `generateEndpoint`
-
-The `Api` class has a method that builds your config for you. By creating a proxy for it,  we can handle 
-custom logic pertaining to the creation of our endpoints prior to calling `super.generateEndpoint()`.
-
-```typescript
-class NewApi extends Api {
-  // Extends generateEndpoint to factor in API versioning
-  static generatePaginationEndpoint(params: NewParams): Endpoint {
-    const config: ConfigParams<NewItem[]> = {
-        method: params.method,
-        url: `/${params.url}?cursor=${params.cursor.toISOString()}&pagesize=${params.pageSize}`
-    }
-    return super.generateEndpoint<ConfigParams<NewItem[]>>(config)
+export const config = new ApiConfig({
+  root: "http://localhost:8080/api",
+  headers: {
+      Authorization: "Bearer [token]"
   }
-}
+})
 ```
-
-> Note: This, additionally, will serve as a universal typecast, eliminating the need to cast each time you
-> call the method.
 
 ---
 
-### Create an endpoint
-The last part of configuring your API interface class is to give it some endpoints. To do this, we'll use our
-newly customized `generateVersionedEndpoint()` call to create the config for `/api/new`. Keep in mind, our Api abstract
-class prepends the `/api` path for us.
+### Create an `Api` interface class
+
+Once you have your base configuration set up, you will use it to instantiate new Api child classes.
+But first,  you must define one. Each Api interface class will contain members that return EndpointConfigs
+to be consumed by the `useEndpoint` hook inside a component. Underneath the hood, the `Api` class comes with
+a `configure()` method which we will use to generate consistent endpoints.
 
 ```typescript
-class NewApi extends Api {
-  static baseUrl = "new"
-  // Returns list of items from /api/{v}/new?cache=false
-  static getNewList = (cursor?: Date, pageSize?: PageSize) => {
-    return this.generateVersionedEndpoint({
+class TestApi extends Api {
+  /* Get array of test data */
+  getTestList(): EndpointConfig<T> {
+    return super.configure<T>({
       method: "GET",
-      url: this.baseUrl,
-      cursor: cursor || new Date(),
-      pageSize: pageSize || 10
-      // ...the rest as needed
-    })
+      url: this.basePath,
+    });
   }
 }
+
+export const testApi = new TestApi(config, "test");
 ```
 
+> Note: While only `method` and `url` are required, you can utilize any property of the
+> `AxiosRequestConfig` type.
 
-# The `useEndpoint` hook
+---
 
-For your components and contexts to actually get data from these endpoints, you're going to have to implement
-the `useEndpoint` hook! This hook takes an endpoint configuration, provides both a controller
-and a state object with response data, and lets the context or component handle when it wants to call.
+### Consume your endpoints
 
-### Implementation 
-
-Inside a functional component, import the hook and pass in an endpoint configuration:
+Lastly, inside a React component or context, at the base level per React's Hook rules,
+you'll import the `useEndpoint` hook and pass in your new api's endpoint.
 
 ```typescript
-import {useEndpoint} from "./UseEndpoint";
-const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList())
+const {call, response} = useEndpoint<T>(testApi.getTestList())
 ```
 
-The reason you provide the hook with a type is so our responses are type-safe. Also, since the API interfaces handle all the
-configuration logic, our component doesn't have to do any origami with state values to pack them into
-an object and send them off, just in time to call `.then()` and handle the response, packing it into
-another piece of state. Instead, what you get is a one-liner with a stateful response.
-
-In some cases, you _will_ need an API endpoint to take in some state from the component. Here's what that
-could look like:
+This will provide you your `call()` controller and the `resposne` state. To utilize them,
+place your controller inside a `useEffect` hook. The following example will only call the
+endpoint when the controller updates:
 
 ```typescript
-const [pageSize, setPageSize] = useState<number>(15)
-const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList(pageSize))
-```
-
-Let's pretend we need to pass a pageSize state into our endpoint for pagination reasons.
-Here's where the beauty of the `useEndpoint` hook shines! It will detect when the state of the endpoint
-has changed, and set its `call()` function to the correct method. From there, our component can create
-an effect for when that state changes (i.e. when a user updates their pageSize state), the effect will
-run `call()` and your data will update!
-
-```typescript
-const [pageSize, setPageSize] = useState<number>(15)
-const [cursor, setCursor] = useState<Date>(new Date())
-const {call, resposne} = useEndpoint<NewItem[]>(NewApi.getNewList(cursor, pageSize))
-
 useEffect(() => {
     call()
-}, [pageSize, cursor])
+}, [call])
+```
+Under the hood, `call` is wrapped with `useCallback` and set to update only when the endpoint
+given to `useEndpoint` is updated in any way. This means that this block will also run if any params
+passed into the endpoint method change.
+
+Your response object looks like this:
+
+```typescript
+{
+    loading: boolean;
+    data: T;
+    sattus: number;
+    message: string;
+}
 ```
 
-And just like that, your component is utilizing your API. 
+---
+
+# Useful Bits
+
+### Customize `configure` to handle custom logic
+
+The `Api` class has a method that builds your config for you. Overriding it in your Api interface
+class allows you to perform any transformative logic needed, such as adding query params to the
+url, or dynamically setting headers. 
+
+```typescript
+class NewApi extends Api {
+  static configure(params: NewParams): EndpointConfig<T> {
+    /* Perform transformations and other logic */
+    return super.configure<ConfigParams<NewItem[]>>(transformedConfig)
+  }
+}
+```
+
+> Note: This, additionally, can serve as a universal typecast, eliminating the need to cast each time you
+> call the method.

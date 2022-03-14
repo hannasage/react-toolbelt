@@ -1,41 +1,49 @@
 import { AxiosRequestConfig } from "axios";
 
-import { ConfigParams } from "./Api";
-import { Api } from "./Api";
+import { Api, ApiConfig, EndpointConfig } from "./Api";
 
-describe("Api", () => {
-    test("static members have values", () => {
-        expect(Api.accessToken).toBe("test token");
-        expect(Api.baseUrl).toBe("/api");
+const config = new ApiConfig({
+    root: "http://testhost:420/api",
+    headers: {
+        Authorization: "Bearer [token]",
+    },
+});
+
+type ApiItem = string | string[];
+class TestApi extends Api {
+    /* Get array of test data */
+    getTestList(): EndpointConfig<ApiItem> {
+        return super.configure<ApiItem>({
+            method: "GET",
+            url: this.basePath,
+        });
+    }
+}
+const testApi = new TestApi(config, "test");
+
+describe("ApiConfig", () => {
+    test("Constructor assigns properties", () => {
+        expect(config.root).toEqual("http://testhost:420/api");
+        expect(config.headers).toEqual({
+            Authorization: "Bearer [token]",
+        });
     });
 });
 
-describe("generateEndpoint()", () => {
-    test("creates valid default endpoint", () => {
-        const params: ConfigParams = {
-            method: "GET",
-            url: "test",
-        };
-        const testEndpoint: AxiosRequestConfig = Api.generateEndpoint(params);
-        expect(testEndpoint.method).toBe("GET");
-        expect(testEndpoint.headers).toBe(Api.defaultHeaders);
-        expect(testEndpoint.url).toBe(`${Api.baseUrl}/test`);
-        expect(testEndpoint.responseType).toBe("json");
+describe("Api", () => {
+    test("Constructor assigns properties", () => {
+        expect(testApi.config.root).toEqual(config.root);
+        expect(testApi.config.headers).toEqual(config.headers);
     });
 
-    test("creates valid custom config", () => {
-        const params: ConfigParams = {
+    test("Endpoints generate correctly", () => {
+        expect(testApi.getTestList()).toEqual({
             method: "GET",
-            url: "test",
+            url: "http://testhost:420/api/test",
             headers: {
-                Test: true,
+                Authorization: "Bearer [token]",
             },
-            responseType: "text",
-        };
-        const testEndpoint = Api.generateEndpoint(params);
-        expect(testEndpoint.method).toBe("GET");
-        expect(testEndpoint.headers?.["Test"]).toBe(true);
-        expect(testEndpoint.url).toBe(`${Api.baseUrl}/test`);
-        expect(testEndpoint.responseType).toBe("text");
-    });
+            responseType: "json"
+        })
+    })
 });
