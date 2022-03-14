@@ -14,7 +14,9 @@ export interface EndpointController<T> {
     response: EndpointResponse<T>;
 }
 
-export function useEndpoint<T>(endpoint: EndpointConfig<T>): EndpointController<T> {
+export function useEndpoint<T>(
+    endpoint: EndpointConfig<T>
+): EndpointController<T> {
     const [response, setResponse] = useState<EndpointResponse<T>>({
         loading: true,
         data: undefined,

@@ -9,7 +9,7 @@ describe("Sample API", () => {
             headers: {
                 Authorization: "Bearer [token]",
             },
-            responseType: "json"
+            responseType: "json",
         });
     });
 

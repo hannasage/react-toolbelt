@@ -7,14 +7,12 @@ export type HTTPMethod = "POST" | "GET" | "PATCH" | "DELETE";
  *
  * @property basePath: string
  * @property headers: AxiosRequestHeaders */
-export interface ConfigProperties {
+export interface ApiConfigProperties {
     basePath: string;
     headers: AxiosRequestHeaders;
 }
 
-/* Overriding the `method` property with my own type. This can
- * further be extended in any Api child class to define any of
- * AxiosRequestConfig's properties with a custom type. */
+/* Overriding the `method` property with my own type. */
 export interface EndpointConfig<T> extends AxiosRequestConfig<T> {
     method: HTTPMethod;
     url: string;
@@ -27,7 +25,7 @@ export interface EndpointConfig<T> extends AxiosRequestConfig<T> {
  *
  * @param config: ConfigProperties */
 export class ApiConfig {
-    constructor(config: ConfigProperties) {
+    constructor(config: ApiConfigProperties) {
         this.root = config.basePath;
         this.headers = config.headers;
     }

@@ -1,8 +1,8 @@
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
-import { sampleApi, SampleObject } from "./api/SampleApi";
-import {EndpointConfig} from "./api/Api";
+import { sampleApi, SampleObject } from "./_sample/SampleApi";
+import { EndpointConfig } from "./api/Api";
 
 const obj = new SampleObject("string", true, 123);
 
@@ -23,9 +23,12 @@ const handlers = [
         return res(ctx.json(postEndpoint.data), ctx.status(202));
     }),
 
-    rest.patch<EndpointConfig<Partial<SampleObject>>>(patchEndpoint.url, (req, res, ctx) => {
-        return res(ctx.json({received: req.body.data}), ctx.status(202));
-    }),
+    rest.patch<EndpointConfig<Partial<SampleObject>>>(
+        patchEndpoint.url,
+        (req, res, ctx) => {
+            return res(ctx.json({ received: req.body.data }), ctx.status(202));
+        }
+    ),
 
     rest.delete(deleteEndpoint.url, (req, res, ctx) => {
         return res(ctx.status(200));

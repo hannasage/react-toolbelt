@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
 import { sampleServer } from "../MockServer";
-import { sampleApi, SampleObject } from "../api/SampleApi";
+import { sampleApi, SampleObject } from "../_sample/SampleApi";
 
 import { useEndpoint } from "./UseEndpoint";
 
@@ -55,8 +55,8 @@ describe("useNetwork.ts", () => {
         expect(result.current.response.message).toBe("");
         expect(result.current.response.data).toEqual({
             received: {
-                bool: false
-            }
+                bool: false,
+            },
         });
     });
 
