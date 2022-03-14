@@ -2,7 +2,9 @@
 
 This repository houses a collection of _Reactive_ tools I've developed over time. React uses hooks
 to let engineers tap into the underlying functions of the library like state and memoization.
-A truly reactive tool is one that taps into these features to create a seamless implementation!
+A truly reactive tool is one that taps into these features to create a clean implementation in your
+component! This often means setting up a few classes and providing a hook to consume them and
+React-ify your logic.
 
 # Tools
 
