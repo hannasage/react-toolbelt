@@ -44,7 +44,7 @@ class SampleApi extends Api {
 }
 
 const config = new ApiConfig({
-    basePath: "http://testhost:420/api",
+    root: "http://testhost:420/api",
     headers: {
         Authorization: "Bearer [token]",
     },
