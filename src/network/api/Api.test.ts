@@ -3,17 +3,19 @@ import { AxiosRequestConfig } from "axios";
 import { Api, ApiConfig, EndpointConfig } from "./Api";
 
 const config = new ApiConfig({
-    basePath: "http://testhost:420/api",
+    root: "http://testhost:420/api",
     headers: {
         Authorization: "Bearer [token]",
     },
 });
+
+type ApiItem = string | string[];
 class TestApi extends Api {
     /* Get array of test data */
-    getTestList() {
-        super.configure<string[]>({
+    getTestList(): EndpointConfig<ApiItem> {
+        return super.configure<ApiItem>({
             method: "GET",
-            url: "test",
+            url: this.basePath,
         });
     }
 }
@@ -33,4 +35,15 @@ describe("Api", () => {
         expect(testApi.config.root).toEqual(config.root);
         expect(testApi.config.headers).toEqual(config.headers);
     });
+
+    test("Endpoints generate correctly", () => {
+        expect(testApi.getTestList()).toEqual({
+            method: "GET",
+            url: "http://testhost:420/api/test",
+            headers: {
+                Authorization: "Bearer [token]",
+            },
+            responseType: "json"
+        })
+    })
 });

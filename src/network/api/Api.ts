@@ -8,7 +8,7 @@ export type HTTPMethod = "POST" | "GET" | "PATCH" | "DELETE";
  * @property basePath: string
  * @property headers: AxiosRequestHeaders */
 export interface ApiConfigProperties {
-    basePath: string;
+    root: string;
     headers: AxiosRequestHeaders;
 }
 
@@ -26,7 +26,7 @@ export interface EndpointConfig<T> extends AxiosRequestConfig<T> {
  * @param config: ConfigProperties */
 export class ApiConfig {
     constructor(config: ApiConfigProperties) {
-        this.root = config.basePath;
+        this.root = config.root;
         this.headers = config.headers;
     }
     root: string;
