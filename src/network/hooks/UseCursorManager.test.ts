@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 import useCursorManager from "./UseCursorManager";
 
-describe("useCursorMap", () => {
+describe("useCursorManager", () => {
     test("Hook renders with default values", () => {
         const { result } = renderHook(() => useCursorManager());
 
