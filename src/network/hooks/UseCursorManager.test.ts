@@ -20,49 +20,55 @@ describe("useCursorManager", () => {
             result.current.controller.addNextCursor("test");
         });
 
-        expect(result.current.values.cursors).toEqual(new Map([
-            [0, ""],
-            [1, "test"]
-        ]));
-    })
+        expect(result.current.values.cursors).toEqual(
+            new Map([
+                [0, ""],
+                [1, "test"],
+            ])
+        );
+    });
 
     test("Simulate receiving new cursors w/ duplicates", () => {
         const { result } = renderHook(() => useCursorManager());
-        const response = ["123", "456", "789"]
-        const responseTwo = ["456", "789", "000"]
+        const response = ["123", "456", "789"];
+        const responseTwo = ["456", "789", "000"];
 
         /* After first response, add cursors */
         act(() => {
             response.forEach((c: string) => {
-                result.current.controller.addNextCursor(c)
-            })
-        })
+                result.current.controller.addNextCursor(c);
+            });
+        });
 
-        expect(result.current.values.cursors).toEqual(new Map<number, string>([
-            [0, ""],
-            [1, "123"],
-            [2, "456"],
-            [3, "789"]
-        ]))
-        expect(result.current.values.hasNext).toBe(true)
-        expect(result.current.values.hasPrev).toBe(false)
+        expect(result.current.values.cursors).toEqual(
+            new Map<number, string>([
+                [0, ""],
+                [1, "123"],
+                [2, "456"],
+                [3, "789"],
+            ])
+        );
+        expect(result.current.values.hasNext).toBe(true);
+        expect(result.current.values.hasPrev).toBe(false);
 
         /* Paging to the next page would mean you'd get two duplicate cursors and
          * one NEW cursor in this array; this should only add the new cursor. */
         act(() => {
             responseTwo.forEach((c: string) => {
-                result.current.controller.addNextCursor(c)
-            })
-        })
+                result.current.controller.addNextCursor(c);
+            });
+        });
 
-        expect(result.current.values.cursors).toEqual(new Map<number, string>([
-            [0, ""],
-            [1, "123"],
-            [2, "456"],
-            [3, "789"],
-            [4, "000"]
-        ]))
-        expect(result.current.values.hasNext).toBe(true)
-        expect(result.current.values.hasPrev).toBe(false)
-    })
+        expect(result.current.values.cursors).toEqual(
+            new Map<number, string>([
+                [0, ""],
+                [1, "123"],
+                [2, "456"],
+                [3, "789"],
+                [4, "000"],
+            ])
+        );
+        expect(result.current.values.hasNext).toBe(true);
+        expect(result.current.values.hasPrev).toBe(false);
+    });
 });
