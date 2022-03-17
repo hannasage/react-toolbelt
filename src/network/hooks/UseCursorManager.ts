@@ -3,6 +3,8 @@ import { useCallback, useMemo, useState } from "react";
 type CursorMap = Map<number, string>;
 
 interface ICursorValues {
+    cursor: string;
+    /* TODO: Refactor tests to use cursor/goTo instead of cursors map */
     cursors: CursorMap;
     currentIndex: number;
     hasPrev: boolean;
@@ -11,6 +13,7 @@ interface ICursorValues {
 
 interface ICursorController {
     addNextCursor: (val: string) => void;
+    goTo: (i: number) => void;
 }
 
 /* CursorManager handles logic to maintain an accurate map of cursors by page.
@@ -21,6 +24,9 @@ const useCursorManager = () => {
         new Map<number, string>([[0, ""]])
     );
     const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const cursor = useMemo(() => {
+        return cursors.get(currentIndex);
+    }, [cursors, currentIndex]);
     const [hasPrev, setHasPrev] = useState<boolean>(false);
     const [hasNext, setHasNext] = useState<boolean>(false);
 
@@ -47,9 +53,13 @@ const useCursorManager = () => {
         addCursor(cursors.size, val);
     };
 
+    /* Handles navigating the cursor map */
+    const goTo = (i: number) => setCurrentIndex(i);
+
     /* Returning values and controllers as objects to keep them clean */
     const values: ICursorValues = useMemo(() => {
         return {
+            cursor: cursor || "",
             cursors: cursors,
             currentIndex: currentIndex,
             hasPrev: hasPrev,
@@ -59,6 +69,7 @@ const useCursorManager = () => {
 
     const controller: ICursorController = {
         addNextCursor: addNextCursor,
+        goTo: goTo,
     };
 
     return { values, controller };
