@@ -1,5 +1,3 @@
-import { AxiosRequestConfig } from "axios";
-
 import { Api, ApiConfig, EndpointConfig } from "./Api";
 
 const config = new ApiConfig({
@@ -43,7 +41,7 @@ describe("Api", () => {
             headers: {
                 Authorization: "Bearer [token]",
             },
-            responseType: "json"
-        })
-    })
+            responseType: "json",
+        });
+    });
 });
