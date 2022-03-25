@@ -88,4 +88,12 @@ describe("useCursorManager", () => {
         act(() => result.current.controller.goTo(1))
         expect(result.current.values.cursor).toBe("next cursor")
     })
+
+    test("Simulate selecting an invalid cursor", () => {
+        const { result } = renderHook(() => useCursorManager());
+        act(() => result.current.controller.addNextCursor("next cursor"))
+        act(() => result.current.controller.goTo(33))
+        expect(result.current.values.cursor).toBe("")
+        expect(result.current.values.currentIndex).toBe(0)
+    })
 });
