@@ -8,10 +8,20 @@ describe("useCursorManager", () => {
         expect(result.current.values.cursors).toEqual(
             new Map<number, string>([[0, ""]])
         );
+        expect(result.current.values.cursor).toBe("")
         expect(result.current.values.currentIndex).toBe(0);
         expect(result.current.values.hasPrev).toBe(false);
         expect(result.current.values.hasNext).toBe(false);
     });
+
+    test("Hook renders with parameter value", () => {
+        const {result} = renderHook(() => useCursorManager("one"))
+
+        expect(result.current.values.cursors).toEqual(
+            new Map<number, string>([[0, "one"]])
+        );
+        expect(result.current.values.cursor).toBe("one")
+    })
 
     test("addNextCursor successfully appends map with cursor", () => {
         const { result } = renderHook(() => useCursorManager());
@@ -71,4 +81,11 @@ describe("useCursorManager", () => {
         expect(result.current.values.hasNext).toBe(true);
         expect(result.current.values.hasPrev).toBe(false);
     });
+
+    test("Simulate selecting a new cursor", () => {
+        const { result } = renderHook(() => useCursorManager());
+        act(() => result.current.controller.addNextCursor("next cursor"))
+        act(() => result.current.controller.goTo(1))
+        expect(result.current.values.cursor).toBe("next cursor")
+    })
 });

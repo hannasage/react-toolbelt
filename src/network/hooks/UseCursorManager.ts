@@ -4,7 +4,6 @@ type CursorMap = Map<number, string>;
 
 interface ICursorValues {
     cursor: string;
-    /* TODO: Refactor tests to use cursor/goTo instead of cursors map */
     cursors: CursorMap;
     currentIndex: number;
     hasPrev: boolean;
@@ -19,9 +18,9 @@ interface ICursorController {
 /* CursorManager handles logic to maintain an accurate map of cursors by page.
  * Each time you append a cursor with `addNextCursor`, the manager will handle,
  * duplicates and set your hasNext and hasPrev values for you. */
-const useCursorManager = () => {
+const useCursorManager = (firstCursor?: string) => {
     const [cursors, setCursors] = useState<CursorMap>(
-        new Map<number, string>([[0, ""]])
+        new Map<number, string>([[0, firstCursor || ""]])
     );
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const cursor = useMemo(() => {
