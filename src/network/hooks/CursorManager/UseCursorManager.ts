@@ -15,7 +15,8 @@ interface ICursorController {
     goTo: (i: number) => void;
 }
 
-const invalidIndexWarning = (i: number) => console.warn(`No cursor at index ${i}, currentIndex was unchanged`)
+const invalidIndexWarning = (i: number) =>
+    console.warn(`No cursor at index ${i}, currentIndex was unchanged`);
 
 /* CursorManager handles logic to maintain an accurate map of cursors by page.
  * Each time you append a cursor with `addNextCursor`, the manager will handle,
@@ -26,7 +27,7 @@ const useCursorManager = (firstCursor?: string) => {
     );
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const cursor = useMemo(() => {
-        return cursors.get(currentIndex);
+        return cursors.get(currentIndex) || "";
     }, [cursors, currentIndex]);
     const [hasPrev, setHasPrev] = useState<boolean>(false);
     const [hasNext, setHasNext] = useState<boolean>(false);
@@ -57,23 +58,23 @@ const useCursorManager = (firstCursor?: string) => {
     /* Handles navigating the cursor map */
     const goTo = (i: number) => {
         if (i >= cursors.size) {
-            setCurrentIndex(currentIndex)
-            invalidIndexWarning(i)
+            setCurrentIndex(currentIndex);
+            invalidIndexWarning(i);
         } else {
-            setCurrentIndex(i)
+            setCurrentIndex(i);
         }
     };
 
     /* Returning values and controllers as objects to keep them clean */
     const values: ICursorValues = useMemo(() => {
         return {
-            cursor: cursor || "",
+            cursor: cursor,
             cursors: cursors,
             currentIndex: currentIndex,
             hasPrev: hasPrev,
             hasNext: hasNext,
         };
-    }, [cursors, currentIndex, hasPrev, hasNext]);
+    }, [cursor, cursors, currentIndex, hasPrev, hasNext]);
 
     const controller: ICursorController = {
         addNextCursor: addNextCursor,

@@ -1,5 +1,3 @@
-import { AxiosRequestConfig } from "axios";
-
 import { Api, ApiConfig, EndpointConfig } from "./Api";
 
 const config = new ApiConfig({

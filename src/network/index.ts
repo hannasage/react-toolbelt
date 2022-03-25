@@ -1,5 +1,4 @@
 import { ApiConfig, Api, EndpointConfig } from "./api/Api";
-
 import { useEndpoint } from "./hooks/UseEndpoint";
 
 /* Main tools */
