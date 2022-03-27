@@ -3,7 +3,7 @@ import {
     Api,
     EndpointConfig,
     ApiConfigProperties,
-    HTTPMethod
+    HTTPMethod,
 } from "./api";
 import useEndpoint from "./hooks/UseEndpoint/UseEndpoint";
 

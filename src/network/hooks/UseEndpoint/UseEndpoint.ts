@@ -10,9 +10,7 @@ interface EndpointResponse<T> {
     message: string;
 }
 
-function useEndpoint<T>(
-    endpoint: EndpointConfig<T>
-): EndpointResponse<T> {
+function useEndpoint<T>(endpoint: EndpointConfig<T>): EndpointResponse<T> {
     const [response, setResponse] = useState<EndpointResponse<T>>({
         loading: true,
         data: undefined,
@@ -99,4 +97,4 @@ function useEndpoint<T>(
     return response;
 }
 
-export default useEndpoint
+export default useEndpoint;
