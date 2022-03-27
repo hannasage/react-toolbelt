@@ -2,7 +2,7 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 
 import { sampleApi, SampleObject } from "./_sample/SampleApi";
-import { EndpointConfig } from "./api/Api";
+import { EndpointConfig } from "./api";
 
 const obj = new SampleObject("string", true, 123);
 

@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 
-import { EndpointConfig } from "../../api/Api";
+import { EndpointConfig } from "../../api";
 
-export interface EndpointResponse<T> {
+interface EndpointResponse<T> {
     loading: boolean;
     data?: T;
     status: number;
     message: string;
 }
 
-export function useEndpoint<T>(
+function useEndpoint<T>(
     endpoint: EndpointConfig<T>
 ): EndpointResponse<T> {
     const [response, setResponse] = useState<EndpointResponse<T>>({
@@ -98,3 +98,5 @@ export function useEndpoint<T>(
 
     return response;
 }
+
+export default useEndpoint

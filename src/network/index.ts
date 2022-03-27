@@ -1,7 +1,13 @@
-import { ApiConfig, Api, EndpointConfig } from "./api/Api";
-import { useEndpoint } from "./hooks/UseEndpoint/UseEndpoint";
+import {
+    ApiConfig,
+    Api,
+    EndpointConfig,
+    ApiConfigProperties,
+    HTTPMethod
+} from "./api";
+import useEndpoint from "./hooks/UseEndpoint/UseEndpoint";
 
 /* Main tools */
 export { ApiConfig, Api, useEndpoint };
 /* Extendable types */
-export type { EndpointConfig };
+export type { EndpointConfig, ApiConfigProperties, HTTPMethod };

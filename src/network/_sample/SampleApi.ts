@@ -1,4 +1,4 @@
-import { Api, ApiConfig, HTTPMethod } from "../api/Api";
+import { Api, ApiConfig, HTTPMethod } from "../api";
 
 export class SampleObject {
     constructor(string: string, bool: boolean, num: number) {

@@ -1,5 +1,20 @@
 # React Networking
 
+## Table of Contents
+
+- [The Gist](#the-gist)
+- [Getting Started](#getting-started)
+  - [Install](#install)
+  - [Create your `ApiConfig`](#create-your-apiconfig)
+  - [Create an `Api` interface class](#create-an-api-interface-class)
+  - [Consume your endpoints](#consume-your-endpoints)
+- [Useful Bits](#useful-bits)
+  - [Customize `configure` to handle custom logic](#customize-configure-to-handle-custom-logic)
+
+## Further Documentation
+
+- [useCursorManager](./hooks/UseCursorManager/README.md)
+
 ## The gist
 
 This library provides abstractions of common networking logic to keep components clean, 
@@ -10,7 +25,7 @@ and their behavior predictable. This is done with classes:
 Lastly, the consumer hook `useEndpoint` takes in an endpoint from your Api class and produces a
 controller and state to be used in a functional component or React context.
 
-# Getting Started
+## Getting Started
 
 ### Install
 ``` 
@@ -83,7 +98,7 @@ Your response object looks like this:
 
 ---
 
-# Useful Bits
+## Useful Bits
 
 ### Customize `configure` to handle custom logic
 
