@@ -9,8 +9,6 @@ React-ify your logic.
 # Tools
 
 ### Coming soon:
-- `usePaginator`: a hook that supplies state and functions for paging through a cursor-based paginated
-api
 - `ControllerContext`: a context template that is set up to handle cgi parameters as state, and consumes
 the `useEndpoint` hook to update API responses as variables change; this is great for hooking up a filter
 selection component with a results display.
