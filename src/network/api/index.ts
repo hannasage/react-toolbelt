@@ -3,16 +3,9 @@ import {
     ApiConfig,
     ApiConfigProperties,
     EndpointConfig,
-    HTTPMethod
+    HTTPMethod,
 } from "./Api";
 
-export {
-    Api,
-    ApiConfig,
-}
+export { Api, ApiConfig };
 
-export type {
-    ApiConfigProperties,
-    EndpointConfig,
-    HTTPMethod
-}
+export type { ApiConfigProperties, EndpointConfig, HTTPMethod };
