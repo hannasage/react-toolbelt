@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 
-import { EndpointConfig } from "../api/Api";
+import { EndpointConfig } from "../../api/Api";
 
 export interface EndpointResponse<T> {
     loading: boolean;
@@ -9,14 +9,10 @@ export interface EndpointResponse<T> {
     status: number;
     message: string;
 }
-export interface EndpointController<T> {
-    call: () => void;
-    response: EndpointResponse<T>;
-}
 
 export function useEndpoint<T>(
     endpoint: EndpointConfig<T>
-): EndpointController<T> {
+): EndpointResponse<T> {
     const [response, setResponse] = useState<EndpointResponse<T>>({
         loading: true,
         data: undefined,
@@ -42,16 +38,22 @@ export function useEndpoint<T>(
         });
     };
 
-    const call = useCallback(() => {
+    useEffect(() => {
+        const ifSubscribed = (action: (v: any) => void, param: any) => {
+            if (isSubscribed) {
+                action(param);
+            }
+        };
+        let isSubscribed = true;
         switch (endpoint.method) {
             case "GET": {
                 axios
                     .get<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
-                        handleResponse(res);
+                        ifSubscribed(handleResponse, res);
                     })
                     .catch((err: any) => {
-                        handleError(err);
+                        ifSubscribed(handleError, err);
                     });
                 break;
             }
@@ -59,10 +61,10 @@ export function useEndpoint<T>(
                 axios
                     .post<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
-                        handleResponse(res);
+                        ifSubscribed(handleResponse, res);
                     })
                     .catch((err: any) => {
-                        handleError(err);
+                        ifSubscribed(handleError, err);
                     });
                 break;
             }
@@ -70,10 +72,10 @@ export function useEndpoint<T>(
                 axios
                     .patch<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
-                        handleResponse(res);
+                        ifSubscribed(handleResponse, res);
                     })
                     .catch((err: any) => {
-                        handleError(err);
+                        ifSubscribed(handleError, err);
                     });
                 break;
             }
@@ -81,15 +83,18 @@ export function useEndpoint<T>(
                 axios
                     .delete<T>(endpoint.url, endpoint)
                     .then((res: AxiosResponse) => {
-                        handleResponse(res);
+                        ifSubscribed(handleResponse, res);
                     })
                     .catch((err: any) => {
-                        handleError(err);
+                        ifSubscribed(handleError, err);
                     });
                 break;
             }
         }
+        return () => {
+            isSubscribed = false;
+        };
     }, [endpoint]);
 
-    return { call, response };
+    return response;
 }
