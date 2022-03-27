@@ -67,21 +67,8 @@ Lastly, inside a React component or context, at the base level per React's Hook 
 you'll import the `useEndpoint` hook and pass in your new api's endpoint.
 
 ```typescript
-const {call, response} = useEndpoint<T>(testApi.getTestList())
+const response = useEndpoint<T>(testApi.getTestList())
 ```
-
-This will provide you your `call()` controller and the `resposne` state. To utilize them,
-place your controller inside a `useEffect` hook. The following example will only call the
-endpoint when the controller updates:
-
-```typescript
-useEffect(() => {
-    call()
-}, [call])
-```
-Under the hood, `call` is wrapped with `useCallback` and set to update only when the endpoint
-given to `useEndpoint` is updated in any way. This means that this block will also run if any params
-passed into the endpoint method change.
 
 Your response object looks like this:
 
