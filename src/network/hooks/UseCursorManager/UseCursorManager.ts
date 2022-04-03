@@ -15,8 +15,10 @@ interface ICursorController {
     goTo: (i: number) => void;
 }
 
-const invalidIndexWarning = (i: number) =>
-    console.warn(`No cursor at index ${i}, currentIndex was unchanged`);
+interface ICursorManager {
+    values: ICursorValues;
+    controller: ICursorController;
+}
 
 /* CursorManager handles logic to maintain an accurate map of cursors by page.
  * Each time you append a cursor with `addNextCursor`, the manager will handle,
@@ -59,7 +61,6 @@ const useCursorManager = (firstCursor?: string) => {
     const goTo = (i: number) => {
         if (i >= cursors.size) {
             setCurrentIndex(currentIndex);
-            invalidIndexWarning(i);
         } else {
             setCurrentIndex(i);
         }
@@ -85,3 +86,4 @@ const useCursorManager = (firstCursor?: string) => {
 };
 
 export default useCursorManager;
+export type { ICursorValues, ICursorController, ICursorManager };

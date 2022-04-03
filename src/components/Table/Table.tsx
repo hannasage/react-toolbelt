@@ -1,4 +1,5 @@
-/* Makes row objects string-indexed */
+import { ICursorManager } from "../../network/hooks/UseCursorManager/UseCursorManager";
+
 export interface TableRow {
     [key: string]: any;
 }
@@ -16,18 +17,22 @@ type Header = string;
  * Header:  The column name */
 export type ColumnConfig = Map<Attribute, Header>;
 export type RowArray = Array<TableRow>;
-
-export interface TableProps {
+export interface TableConfig {
     columns: ColumnConfig;
     rows: RowArray;
 }
 
-const Table = ({ columns, rows }: TableProps) => {
+export interface TableProps {
+    config: TableConfig;
+    pageController?: ICursorManager;
+}
+
+const Table = ({ config, pageController }: TableProps) => {
     /* Renders the header row of the table from columns.values() */
     const TableHeaders = () => {
         return (
             <tr>
-                {Array.from(columns.values()).map((val) => (
+                {Array.from(config.columns.values()).map((val) => (
                     <th key={val} scope="col">
                         {val}
                     </th>
@@ -40,27 +45,61 @@ const Table = ({ columns, rows }: TableProps) => {
      * to render each cell in the appropriate column. */
     const TableRows = () => {
         return (
-            <tr>
-                {rows.map((object, rowIndex) =>
-                    Array.from(columns.keys()).map((col, colIndex) => (
-                        <th key={`${rowIndex}:${colIndex}`} scope="row">
-                            {object[col]}
-                        </th>
-                    ))
-                )}
-            </tr>
+            <>
+                {config.rows.map((object, rowIndex) => (
+                    <tr key={rowIndex}>
+                        {Array.from(config.columns.keys()).map(
+                            (col, colIndex) => (
+                                <td key={`${rowIndex}:${colIndex}`}>
+                                    {object[col]}
+                                </td>
+                            )
+                        )}
+                    </tr>
+                ))}
+            </>
         );
     };
 
+    /* Handles pagination button logic and display */
+    function PaginationButtons({ values, controller }: ICursorManager) {
+        return (
+            <div>
+                {values.hasPrev && (
+                    <button
+                        onClick={() => controller.goTo(values.currentIndex - 1)}
+                    >
+                        <span>Previous</span>
+                    </button>
+                )}
+                {values.hasNext && (
+                    <button
+                        onClick={() => controller.goTo(values.currentIndex + 1)}
+                    >
+                        <span>Next</span>
+                    </button>
+                )}
+            </div>
+        );
+    }
+
     return (
-        <table>
-            <thead>
-                <TableHeaders />
-            </thead>
-            <tbody>
-                <TableRows />
-            </tbody>
-        </table>
+        <>
+            <table>
+                <thead>
+                    <TableHeaders />
+                </thead>
+                <tbody>
+                    <TableRows />
+                </tbody>
+            </table>
+            {pageController ? (
+                <PaginationButtons
+                    values={pageController.values}
+                    controller={pageController.controller}
+                />
+            ) : null}
+        </>
     );
 };
 
