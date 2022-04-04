@@ -1,6 +1,4 @@
-import { fireEvent, screen } from "@testing-library/react";
-
-import { renderWithRouter } from "../TestUtils";
+import { renderWithRouter, fireEvent, screen } from "../TestUtils";
 
 import { TestTable } from "./TestTable";
 
