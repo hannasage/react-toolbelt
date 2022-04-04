@@ -1,13 +1,10 @@
+import { FilterController } from "@normellis/react-network/hooks/UseFilterManager/UseFilterManager";
+
 import { ICursorManager } from "../../network/hooks/UseCursorManager/UseCursorManager";
 
 export type SortOrder = "ASC" | "DESC";
 export interface TableRow {
     [key: string]: any;
-}
-
-export interface SortDefinition {
-    attribute: string;
-    order: SortOrder;
 }
 
 /* ColumnConfig tells the Table element how to render each column, including the
@@ -29,11 +26,11 @@ export interface TableConfig {
 
 export interface TableProps {
     config: TableConfig;
-    sortManager: () => void;
+    filterManager: FilterController;
     pageController?: ICursorManager;
 }
 
-const Table = ({ config, sortManager, pageController }: TableProps) => {
+const Table = ({ config, filterManager, pageController }: TableProps) => {
     /* Renders the header row of the table from columns.values() */
     const TableHeaders = () => {
         return (
@@ -43,7 +40,7 @@ const Table = ({ config, sortManager, pageController }: TableProps) => {
                         return (
                             <th
                                 key={colConfig.columnHeader}
-                                onClick={() => sortManager()}
+                                onClick={() => filterManager.swapSortOrder()}
                             >
                                 {colConfig.columnHeader}
                             </th>
@@ -77,7 +74,6 @@ const Table = ({ config, sortManager, pageController }: TableProps) => {
             </>
         );
     };
-
 
     /* Handles pagination button logic and display */
     function PaginationButtons({ values, controller }: ICursorManager) {
